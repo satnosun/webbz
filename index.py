@@ -4,7 +4,7 @@ app = Flask(__name__)
 app.debug = True
  
 @app.route('/')
-def hello():
+def helloworld():
     return render_template('hello.html')
  
 from bae.core.wsgi import WSGIApplication
