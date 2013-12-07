@@ -3214,9 +3214,10 @@ pre code {
             </div>
         </div><!-- .bs-docs-section -->
 
-    </div><!-- .col-md-9 -->
-</div><!-- .row -->
-</div><!-- .container .bs-docs-container -->
+    </div>
+</div>
+
+</div>
 
     <!-- Footer
     ================================================== -->
