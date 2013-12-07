@@ -10,7 +10,6 @@ db = SQLAlchemy(app)
 
 import os
 from flask.ext.login import LoginManager
-from flask.ext.openid import OpenID
 from config import basedir
 
 from app import views, models
