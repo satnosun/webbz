@@ -11,5 +11,8 @@ db = SQLAlchemy(app)
 import os
 from flask.ext.login import LoginManager
 from config import basedir
+lm = LoginManager()
+lm.init_app(app)
+lm.login_view = 'login'
 
 from app import views, models

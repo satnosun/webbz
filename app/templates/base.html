@@ -1,10 +1,154 @@
-{% extends "base0.html" %}
-{% block reglog %}
-<form class="navbar-form navbar-right" action="{{ url_for('index') }}" role="form">
-    <div class="form-group"><input id="" class="form-control" type="text" name="" placeholder="用户名"></div>
-    <div class="form-group"><input id="" class="form-control" type="password" name="" placeholder="密码"></div>
-    <button class="btn btn-success" type="submit">登录</button>
-    <a class="btn btn-info" role="button" href="{{ url_for('register') }}">注册</a>
-    </form>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+<!-- Meta -->
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+<!-- Title -->
+<title>{{ title }} &middot; 三国版杀网页版</title>
+<!-- CSS -->
+<link rel="stylesheet" href="http://cdn.bootcss.com/twitter-bootstrap/3.0.2/css/bootstrap.min.css">
+<style>
+body {
+    padding-top: 70px;
+    padding-bottom: 20px;
+}
+footer {
+    color: #999;
+    text-align: center;
+    padding: 10px 0;
+    margin-top: 70px;
+    border-top: 1px solid #e5e5e5;
+    background-color: #f5f5f5
+}
+.container-narrow {
+    max-width: 480px
+}
 
+@media screen and (max-width: 767px) {
+    .row-offcanvas {
+        position: relative;
+        -webkit-transition: all 0.25s ease-out;
+        -moz-transition: all 0.25s ease-out;
+        transition: all 0.25s ease-out;
+    }
+
+    .row-offcanvas-right
+    .sidebar-offcanvas {
+        right: -50%;
+    }
+
+    .row-offcanvas-left
+    .sidebar-offcanvas {
+        left: -50%;
+    }
+
+    .row-offcanvas-right.active {
+        right: 50%;
+    }
+
+    .row-offcanvas-left.active {
+        left: 50%;
+    }
+
+    .sidebar-offcanvas {
+        position: absolute;
+        top: 0;
+        width: 50%;
+    }
+}
+
+#scrollUp {
+    background: url("/static/img/top.png") no-repeat;
+    bottom: 20px;
+    height: 38px;
+    right: 20px;
+    width: 38px;
+}
+</style>
+<!--[if lt IE 9]>
+        <script src="http://cdn.bootcss.com/html5shiv/3.7.0/html5shiv.min.js"></script>
+        <script src="http://cdn.bootcss.com/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+<!-- Favicons -->
+</head>
+<body>
+
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">toggle 导航</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{{ url_for('index') }}"><big>三国版杀</big></a>
+        </div><!-- .navbar-header -->
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="{{ url_for('index') }}">首页</a></li>
+                <li><a href="">游戏</a></li>
+                <li><a href="">论坛</a></li>
+            </ul>
+            <div class="nav navbar-form navbar-right">
+                {% if g.user.is_authenticated() %}
+                <a class="btn btn-primary" href="{{ url_for('profile') }}">{{ g.user.nickname }}</a>
+                <a class="btn btn-warning" href="{{ url_for('logout') }}">注销</a>
+                {% else %}
+                <a class="btn btn-success" href="{{ url_for('login') }}">登录</a>
+                <a class="btn btn-info" href="{{ url_for('register') }}">注册</a>
+                {% endif %}
+            </div>
+        </div><!-- .navbar-collapse -->
+    </div><!-- .container -->
+</div><!-- .navbar -->
+<div class="container">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class="list-unstyled alert alert-info">
+    {% for message in messages %}
+        <li>{{ message }} </li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+</div>
+{% block content %}{% endblock %}
+<footer>
+    <div class="container">
+        <p>&copy; 掉小渣 2013</p>
+    </div>
+</footer>
+<a id="scrollUp" href="#top"></a>
+
+
+<!-- Script
+======================== -->
+<script src="http://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://cdn.bootcss.com/twitter-bootstrap/3.0.2/js/bootstrap.min.js"></script>
+<script src="/static/js/jquery.scrollUp.min.js"></script>
+<script>
+$(document).ready(function(){
+        $.scrollUp({
+              //scrollName: 'scrollUp', // Element ID
+              //topDistance: '300', // Distance from top before showing element (px)
+              //topSpeed: 300, // Speed back to top (ms)
+              //animation: 'fade', // Fade, slide, none
+              //animationInSpeed: 200, // Animation in speed (ms)
+              //animationOutSpeed: 200, // Animation out speed (ms)
+              scrollText: '', // Text for element
+              //activeOverlay: false  // Set CSS color to display scrollUp active point, e.g '#00FFFF'
+        });
+      });
+$(document).ready(function() {
+        $('[data-toggle=offcanvas]').click(function() {
+            $('.row-offcanvas').toggleClass('active');
+            });
+        });
+</script>
+</body>
+</html>

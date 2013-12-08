@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import hashlib
 from app import db
+from datetime import datetime
 
 LEVEL_USER = 0
 LEVEL_PLAYER = 3
@@ -12,6 +13,7 @@ class User(db.Model):
     username = db.Column(db.String(64), unique = True)
     nickname = db.Column(db.String(64), unique = True)
     password = db.Column(db.String(32), nullable=False)
+    reg_time = db.Column(db.DateTime, default = datetime.now)
     level = db.Column(db.SmallInteger, default = LEVEL_USER)
     exp = db.Column(db.Integer, default = 0)
 
