@@ -92,7 +92,7 @@ footer {
             <ul class="nav navbar-nav">
                 <li><a href="{{ url_for('index') }}">首页</a></li>
                 <li><a href="">游戏</a></li>
-                <li><a href="">论坛</a></li>
+                <li><a href="{{ url_for('forum') }}">论坛</a></li>
             </ul>
             <div class="nav navbar-form navbar-right">
                 {% if g.user.is_authenticated() %}
@@ -109,9 +109,12 @@ footer {
 <div class="container">
     {% with messages = get_flashed_messages() %}
     {% if messages %}
-    <ul class="list-unstyled alert alert-info">
+    <ul class="list-unstyled alert alert-info alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
     {% for message in messages %}
-        <li>{{ message }} </li>
+        <li>{{ message }}
+
+        </li>
     {% endfor %}
     </ul>
     {% endif %}

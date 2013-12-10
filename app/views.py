@@ -8,17 +8,15 @@ if sys.getdefaultencoding() != default_encoding:
 from flask import g, request, render_template, session, url_for, escape, redirect, flash
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm
-from forms import RegistrationForm, LoginForm
-from models import User, LEVEL_USER, LEVEL_PLAYER, LEVEL_SEER, LEVEL_ADMIN
+from forms import RegistrationForm, LoginForm, TopicForm, ReplyForm
+from models import User, Topic, Reply, LEVEL_USER, LEVEL_PLAYER, LEVEL_SEER, LEVEL_ADMIN
 import CaptchasDotNet
 import hashlib
 
 @app.route('/')
 @app.route('/index')
 def index():
-    form = LoginForm()
     return render_template('index.html',
-        form = form,
         title = '首页')
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -99,3 +97,59 @@ def logout():
 def profile():
     pass
 
+@app.route('/forum')
+def forum():
+    return render_template('forum.html',
+        title = '论坛')
+
+@app.route('/b/<int:board_id>')
+def show_board(board_id):
+    if board_id == 0:
+        topics = Topic.query.all()
+        return render_template('board.html',
+            board_id = board_id,
+            topics = topics,
+            title = '新建')
+
+@app.route('/t/<int:topic_id>')
+def show_topic(topic_id):
+    topic = Topic.query.filter_by(id = topic_id).first()
+    replys = Reply.query.all()
+    return render_template('topic.html',
+            topic = topic,
+            replys = replys,
+            title = '新建')
+
+@app.route('/new', methods=['GET', 'POST'])
+@login_required
+def new():
+    form = TopicForm()
+    flash(form.board_id.data)
+    if form.validate_on_submit():
+        u = User.query.filter_by(id = g.user.id).first()
+        topic = Topic(board_id=form.board_id.data, category=form.category.data, author=u, title=form.title.data, content=form.content.data)
+        db.session.add(topic)
+        db.session.commit()
+        flash("发表成功")
+        return redirect(request.args.get("next") or url_for("index"))
+    form.board_id.data = request.args.get('board_id', '')
+    return render_template('new.html',
+        form = form,
+        title = '新建')
+
+@app.route('/reply', methods=['GET', 'POST'])
+@login_required
+def reply():
+    form = ReplyForm()
+    if form.validate_on_submit():
+        u = User.query.filter_by(id = g.user.id).first()
+        t = Topic.query.filter_by(id = form.topic_id.data).first()
+        reply = Reply(thread=t, author=u, content=form.content.data)
+        db.session.add(reply)
+        db.session.commit()
+        flash("回复成功")
+        return redirect(request.args.get("next") or url_for("index"))
+    form.topic_id.data = request.args.get('topic_id', '')
+    return render_template('reply.html',
+        form = form,
+        title = '新建')

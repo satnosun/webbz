@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block content %}
+<div class="container">
+<ol class="breadcrumb">
+  <li><a href="{{ url_for('forum') }}">论坛</a></li>
+  <li class="active">公共区</li>
+</ol>
+<a href="{{ url_for('new', board_id=board_id) }}">创建话题</a>
+{% for topic in topics %}
+<div class="panel panel-default"><a href="{{ url_for('show_topic', topic_id=topic.id) }}">
+  <div class="panel-body">
+    {{ topic.title }}
+  </div></a>
+  <div class="panel-footer">{{ topic.category }} - {{ topic.author.nickname }} - {{ topic.post_time }}</div>
+</div>
+{% endfor %}
+</div>
+
+{% endblock %}

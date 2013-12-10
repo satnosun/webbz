@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row row-offcanvas row-offcanvas-right">
+        <div class="col-xs-12 col-sm-9">
+            <p class="pull-right visible-xs">
+                <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">显示导航</button>
+            </p>
+            <div class="jumbotron">
+                <h1>你好，世界！</h1>
+                <p>这是一个例子。</p>
+                  <!-- Button trigger modal -->
+<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+查看规则
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">规则详情</h4>
+      </div>
+      <div class="modal-body">
+        自己查书吧...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+            </div>
+            <div class="row">
+                <div class="col-6 col-sm-6 col-lg-4">
+                    <h2>标题</h2>
+                    <p>这个看不懂不懂。</p>
+                    <p><a class="btn btn-default" href="" role="button">查看详情 &raquo;</a></p>
+                </div>
+                <div class="col-6 col-sm-6 col-lg-4">
+                    <h2>标题</h2>
+                    <p>这个看不懂不懂。</p>
+                    <p><a class="btn btn-default" href="" role="button">查看详情 &raquo;</a></p>
+                </div>
+                <div class="col-6 col-sm-6 col-lg-4">
+                    <h2>标题</h2>
+                    <p>这个看不懂不懂。</p>
+                    <p><a class="btn btn-default" href="" role="button">查看详情 &raquo;</a></p>
+                </div>
+                <div class="col-6 col-sm-6 col-lg-4">
+                    <h2>标题</h2>
+                    <p>这个看不懂不懂。</p>
+                    <p><a class="btn btn-default" href="" role="button">查看详情 &raquo;</a></p>
+                </div>
+                <div class="col-6 col-sm-6 col-lg-4">
+                    <h2>标题</h2>
+                    <p>这个看不懂不懂。</p>
+                    <p><a class="btn btn-default" href="" role="button">查看详情 &raquo;</a></p>
+                </div>
+                <div class="col-6 col-sm-6 col-lg-4">
+                    <h2>标题</h2>
+                    <p>这个看不懂不懂。</p>
+                    <p><a class="btn btn-default" href="" role="button">查看详情 &raquo;</a></p>
+                </div>
+            </div><!-- row -->
+        </div><!-- .col -->
+        <div id="sidebar" class="col-xs-6 col-sm-3 sidebar-offcanvas" role="navigation">
+            <div class="list-group">
+                <a class="list-group-item" href="{{ url_for('show_board', board_id=0) }}">公共区</a>
+                <a class="list-group-item" href="">连接</a>
+                <a class="list-group-item" href="">连接</a>
+                <a class="list-group-item" href="">连接</a>
+                <a class="list-group-item" href="">连接</a>
+                <a class="list-group-item" href="">连接</a>
+                <a class="list-group-item" href="">连接</a>
+                <a class="list-group-item" href="">连接</a>
+            </div>
+        </div><!-- #sidebar -->
+    </div><!-- .row-offcanvas -->
+</div><!-- .container -->
+
+{% endblock %}
