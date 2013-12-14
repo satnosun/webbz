@@ -13,6 +13,37 @@ from models import User, Topic, Reply, LEVEL_USER, LEVEL_PLAYER, LEVEL_SEER, LEV
 import CaptchasDotNet
 import hashlib
 
+from flask.ext.admin import Admin, BaseView, expose
+
+from flask.ext.admin.contrib.sqla import ModelView
+
+
+class MyView(BaseView):
+    @expose('/')
+    def index(self):
+        # Get URL for the test view method
+        url = url_for('.test')
+        return self.render('admin/index.html', url=url)
+
+    @expose('/test/')
+    def test(self):
+        return self.render('test.html')
+
+class MyView(ModelView):
+    # Disable model creation
+    can_create = False
+
+    # Override displayed fields
+    column_list = ('username', 'password')
+
+    def __init__(self, session, **kwargs):
+        # You can pass name and other parameters if you want to
+        super(MyView, self).__init__(User, session, **kwargs)
+
+admin = Admin(app)
+admin.add_view(MyView(db.session))
+
+
 @app.route('/')
 @app.route('/index')
 def index():
