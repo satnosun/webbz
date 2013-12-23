@@ -7,41 +7,54 @@ if sys.getdefaultencoding() != default_encoding:
 
 from flask import g, request, render_template, session, url_for, escape, redirect, flash
 from flask.ext.login import login_user, logout_user, current_user, login_required
-from app import app, db, lm
+from app import app, db, login_manager
 from forms import RegistrationForm, LoginForm, TopicForm, ReplyForm
-from models import User, Topic, Reply, LEVEL_USER, LEVEL_PLAYER, LEVEL_SEER, LEVEL_ADMIN
+from models import User, Topic, Reply, Bz, LEVEL_USER, LEVEL_PLAYER, LEVEL_SEER, LEVEL_ADMIN
 import CaptchasDotNet
 import hashlib
-
-from flask.ext.admin import Admin, BaseView, expose
-
+from flask.ext.admin import Admin, BaseView, expose, AdminIndexView
 from flask.ext.admin.contrib.sqla import ModelView
 
 
-class MyView(BaseView):
+admin = Admin(app, name='三国版杀', index_view=AdminIndexView(name='概况'))
+class MyBaseView(BaseView):
+    def is_accessible(self):
+        return g.user.is_authenticated()
     @expose('/')
     def index(self):
-        # Get URL for the test view method
-        url = url_for('.test')
-        return self.render('admin/index.html', url=url)
-
+        return self.render('admin/index.html')
+    
     @expose('/test/')
     def test(self):
-        return self.render('test.html')
+        return self.render('admin/test.html')
 
-class MyView(ModelView):
+
+admin.add_view(MyBaseView(name='Hello', endpoint='hello'))
+admin.add_view(MyBaseView(name='Hello 1', endpoint='test1', category='Test'))
+#admin.add_view(MyBaseView(name='test'))
+
+class UserView(ModelView):
     # Disable model creation
     can_create = False
 
-    # Override displayed fields
+    # 重写显示的字段
     column_list = ('username', 'password')
 
     def __init__(self, session, **kwargs):
         # You can pass name and other parameters if you want to
-        super(MyView, self).__init__(User, session, **kwargs)
+        super(UserView, self).__init__(User, session, **kwargs)
 
-admin = Admin(app)
-admin.add_view(MyView(db.session))
+class BzView(ModelView):
+    # 重写显示的字段
+    column_list = ('id', 'name', 'status')
+
+    def __init__(self, session, **kwargs):
+        # You can pass name and other parameters if you want to
+        super(BzView, self).__init__(Bz, session, **kwargs)
+
+admin.add_view(BzView(db.session))
+
+admin.add_view(UserView(db.session))
 
 
 @app.route('/')
@@ -84,7 +97,7 @@ def register():
     form.random.data = captchas.random()
     return render_template('register.html', form=form, captchas=captchas)
 
-@lm.user_loader
+@login_manager.user_loader
 def load_user(id):
     return User.query.get(int(id))
 
@@ -184,3 +197,26 @@ def reply():
     return render_template('reply.html',
         form = form,
         title = '新建')
+
+@app.route('/rule')
+def rule():
+    return render_template('rule.html',
+        title = '规则')
+
+@app.route('/event')
+def event():
+    return render_template('event.html',
+        title = '活动')
+		
+@app.route('/game')
+def game():
+    return render_template('game.html',
+        title = '游戏')
+		
+@app.route('/status')
+def status():
+    bzs = Bz.query.all()
+    return render_template('status.html',
+        bzs = bzs,
+        title = '概况')
+

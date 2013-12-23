@@ -42,6 +42,7 @@ class User(db.Model):
 
 class Bz(db.Model):
     id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(64))
     status = db.Column(db.String(64))
     stage = db.Column(db.String(64))
     start_time = db.Column(db.DateTime, default = datetime.now)
@@ -65,4 +66,5 @@ class Reply(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     content = db.Column(db.Text, nullable=False)
     post_time = db.Column(db.DateTime, default = datetime.now)
+
 

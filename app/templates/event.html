@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row row-offcanvas row-offcanvas-right">
+        <div class="col-xs-12 col-sm-9">
+            <p class="pull-right visible-xs">
+                <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">显示导航</button>
+            </p>
+            <div class="jumbotron">
+                <h1>你好，世界！</h1>
+				<p>这个是个测试！</p>
+
+                  <!-- Button trigger modal -->
+<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+查看规则
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">查看详情</h4>
+      </div>
+      <div class="modal-body">
+                <p>《三国版杀》是一款由三国人物为主要角色的BBS杀人游戏。此版《三国版杀》是由斗马原创，百度三国杀吧瑜小乔在2010年1月引入三国杀吧的一款版杀，2010年2月底正式转移阵地至百度三国版杀吧。目前更新到7.1版本。游戏分三方进行，玩家共24人，其中魏国初始7人，蜀国初始7人，吴国初始7人，在野3人。此游戏最大的游戏特色，就是在游戏中加入了武将技能系统每名武将都有专属武将技，每名玩家所扮演的武将，都有自身的专属武将技，这些技能从名称到作用都是根据该武将能力、性格、生平而设计。 </p>
+		<p>该网站为测试版，规则经常变化。</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+            </div>
+            <div class="row">
+                <div class="col-6 col-sm-6 col-lg-4">
+                    <h2>标题</h2>
+                    <p>这个看不懂不懂。</p>
+                    <p><a class="btn btn-default" href="" role="button">查看详情 &raquo;</a></p>
+                </div>
+                <div class="col-6 col-sm-6 col-lg-4">
+                    <h2>标题</h2>
+                    <p>这个看不懂不懂。</p>
+                    <p><a class="btn btn-default" href="" role="button">查看详情 &raquo;</a></p>
+                </div>
+                <div class="col-6 col-sm-6 col-lg-4">
+                    <h2>标题</h2>
+                    <p>这个看不懂不懂。</p>
+                    <p><a class="btn btn-default" href="" role="button">查看详情 &raquo;</a></p>
+                </div>
+                <div class="col-6 col-sm-6 col-lg-4">
+                    <h2>标题</h2>
+                    <p>这个看不懂不懂。</p>
+                    <p><a class="btn btn-default" href="" role="button">查看详情 &raquo;</a></p>
+                </div>
+                <div class="col-6 col-sm-6 col-lg-4">
+                    <h2>标题</h2>
+                    <p>这个看不懂不懂。</p>
+                    <p><a class="btn btn-default" href="" role="button">查看详情 &raquo;</a></p>
+                </div>
+                <div class="col-6 col-sm-6 col-lg-4">
+                    <h2>标题</h2>
+                    <p>这个看不懂不懂。</p>
+                    <p><a class="btn btn-default" href="" role="button">查看详情 &raquo;</a></p>
+                </div>
+            </div><!-- row -->
+        </div><!-- .col -->
+        <div id="sidebar" class="col-xs-6 col-sm-3 sidebar-offcanvas" role="navigation">
+            <div class="list-group">
+                <a class="list-group-item" href="{{ url_for('index') }}">游戏介绍</a>
+                <a class="list-group-item" href="{{ url_for('rule') }}">当前规则</a>
+                <a class="list-group-item" href="{{ url_for('event') }}">精彩活动</a>
+            </div>
+        </div><!-- #sidebar -->
+    </div><!-- .row-offcanvas -->
+</div><!-- .container -->
+
+{% endblock %}
