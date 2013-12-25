@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+﻿#-*- coding: utf-8 -*-
 import sys
 default_encoding = 'utf-8'
 if sys.getdefaultencoding() != default_encoding:
@@ -38,7 +38,7 @@ class UserView(ModelView):
     can_create = False
 
     # 重写显示的字段
-    column_list = ('username', 'password')
+    column_list = ('username', 'password', 'level')
 
     def __init__(self, session, **kwargs):
         # You can pass name and other parameters if you want to
@@ -215,8 +215,11 @@ def game():
 		
 @app.route('/status')
 def status():
+    bz = db.session.query(Bz).filter(Bz.status != u'已完结').first()
     bzs = Bz.query.all()
     return render_template('status.html',
         bzs = bzs,
+        bz = bz,
+        user = g.user,
         title = '概况')
 

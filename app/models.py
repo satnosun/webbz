@@ -4,6 +4,8 @@ from app import db
 from datetime import datetime
 
 LEVEL_USER = 0
+LEVEL_PRE_PLAYER = 1
+LEVEL_PRE_SEER = 2
 LEVEL_PLAYER = 3
 LEVEL_SEER = 6
 LEVEL_ADMIN = 9

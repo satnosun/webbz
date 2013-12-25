@@ -7,39 +7,46 @@
                 <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">显示导航</button>
             </p>
             <div class="jumbotron">
-                <h1>你好，世界！</h1>
-                <p>这是一个例子。</p>
-                  <!-- Button trigger modal -->
-<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-查看规则
-</button>
-
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="myModalLabel">规则详情</h4>
-      </div>
-      <div class="modal-body">
-        自己查书吧...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+            {% if bz %}
+                <h1>{{ bz.name }}<small>{{ bz.status }}</small></h1>                
+                <p>天庭人数为：{{ bz.staff_num }}人，玩家人数为：{{ bz.player_num }}人。</p>
+                {% if user.level == 0 %}
+                    {% if bz.status == '筹备中' %}
+                    <a class="btn btn-primary btn-lg" href="" role="button">报名天庭</a>
+                    {% elif bz.status == '招募中'%}
+                    <a class="btn btn-primary btn-lg" href="" role="button">报名参战</a>
+                    {% endif %}
+                {% elif user.level == 1 %}
+                <a class="btn btn-info btn-lg" href="" role="button">已报名参战</a>
+                {% elif user.level == 2 %}
+                <a class="btn btn-info btn-lg" href="" role="button">已报名天庭</a>
+                {% elif user.level == 6 %}
+                    {% if bz.status == '筹备中' %}
+                    <a class="btn btn-primary btn-lg" href="" role="button">命名马甲</a>
+                    {% elif bz.status == '招募中' %}
+                    <a class="btn btn-primary btn-lg" href="" role="button">挑选战士</a>
+                    {% elif bz.status == '分配角色中' %}
+                    <a class="btn btn-primary btn-lg" href="" role="button">分配角色</a>
+                    {% endif %}
+                {% elif user.level == 9 %}
+                    {% if bz.status == '筹备中' %}
+                    <a class="btn btn-primary btn-lg" href="" role="button">任命天庭</a>
+                    {% endif %}
+                {% endif %}
+            {% else %}
+                <h1>当前没有未完结的版杀</h1>                
+                {% if user.level == 9 %}
+                <a class="btn btn-info btn-lg" href="" role="button">我是管理员</a>
+                {% endif %}
+            {% endif %}
             </div>
 
 
             <div class="row">
-            {% for bz in bzs %}
+            {% for bz1 in bzs %}
                 <div class="col-6 col-sm-6 col-lg-4">
-                    <h2>{{ bz.name }}</h2>
-                    <p>{{ bz.status }}</p>
+                    <h2>{{ bz1.name }}</h2>
+                    <p>{{ bz1.status }}</p>
                     <p><a class="btn btn-default" href="" role="button">查看详情 &raquo;</a></p>
                 </div>
                 {% endfor %}
@@ -47,9 +54,8 @@
         </div><!-- .col -->
         <div id="sidebar" class="col-xs-6 col-sm-3 sidebar-offcanvas" role="navigation">
             <div class="list-group">
+            {% if bz.status=='招募中' %}
                 <a class="list-group-item" href="{{ url_for('status') }}">版杀概况</a>
-                <a class="list-group-item" href="">报名天庭</a>
-                <a class="list-group-item" href="">报名参战</a>
                 <a class="list-group-item" href="">挑选战士</a>
                 <a class="list-group-item" href="">命名马甲</a>
                 <a class="list-group-item" href="">分配角色</a>
@@ -59,6 +65,7 @@
                 <a class="list-group-item" href="">我的大营</a>
                 <a class="list-group-item" href="">结算行动</a>
                 <a class="list-group-item" href="">结算投票</a>
+                {% endif %}
             </div>
         </div><!-- #sidebar -->
     </div><!-- .row-offcanvas -->
