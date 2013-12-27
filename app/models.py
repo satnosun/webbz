@@ -42,6 +42,8 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % (self.nickname)
 
+
+        
 class Bz(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(64))
@@ -51,6 +53,9 @@ class Bz(db.Model):
     end_time = db.Column(db.DateTime)
     staff_num = db.Column(db.SmallInteger, default = 0)
     player_num = db.Column(db.Integer, default = 0)
+    actions = db.relationship('Action', backref = 'bz', lazy = 'dynamic')
+    settles = db.relationship('Settle', backref = 'bz', lazy = 'dynamic')
+    feedbacks = db.relationship('Feedback', backref = 'bz', lazy = 'dynamic')
 
 class Topic(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -69,4 +74,62 @@ class Reply(db.Model):
     content = db.Column(db.Text, nullable=False)
     post_time = db.Column(db.DateTime, default = datetime.now)
 
+followers = db.Table('followers',
+    db.Column('follower_id', db.Integer, db.ForeignKey('player.id')),
+    db.Column('followed_id', db.Integer, db.ForeignKey('player.id'))
+)
+    
+class Role(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(64))
+    name_group = db.Column(db.String(128))
+    nation = db.Column(db.String(64))
+    position = db.Column(db.String(64))
+    tags = db.Column(db.String(64))
+    tags_group = db.Column(db.String(256))
+    skills = db.Column(db.String(64))
+    skills_group = db.Column(db.String(256))
+
+class Player(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.String(64))
+    nickname = db.Column(db.String(64))
+    blood = db.Column(db.Integer)
+    rolename = db.Column(db.String(64))
+    rolename_group = db.Column(db.String(128))
+    nation = db.Column(db.String(64))
+    position = db.Column(db.String(64))
+    tags = db.Column(db.String(64))
+    tags_group = db.Column(db.String(256))
+    skills = db.Column(db.String(64))
+    skills_group = db.Column(db.String(256))
+    followed = db.relationship('Player', 
+        secondary = followers, 
+        primaryjoin = (followers.c.follower_id == id), 
+        secondaryjoin = (followers.c.followed_id == id), 
+        backref = db.backref('followers', lazy = 'dynamic'), 
+        lazy = 'dynamic')
+    def follow(self, player):
+        if not self.is_following(player):
+            self.followed.append(player)
+            return self
+
+    def is_following(self, player):
+        return self.followed.filter(followers.c.followed_id == player.id).count() > 0
+
+
+class Action(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    content = db.Column(db.Text)
+    bz_id = db.Column(db.Integer, db.ForeignKey('bz.id'))
+    
+class Settle(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    content = db.Column(db.Text)
+    bz_id = db.Column(db.Integer, db.ForeignKey('bz.id'))
+
+class Feedback(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    content = db.Column(db.Text)
+    bz_id = db.Column(db.Integer, db.ForeignKey('bz.id'))
 

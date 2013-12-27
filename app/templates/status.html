@@ -12,25 +12,25 @@
                 <p>天庭人数为：{{ bz.staff_num }}人，玩家人数为：{{ bz.player_num }}人。</p>
                 {% if user.level == 0 %}
                     {% if bz.status == '筹备中' %}
-                    <a class="btn btn-primary btn-lg" href="" role="button">报名天庭</a>
+                    <a class="btn btn-primary btn-lg" href="{{ url_for('apply_seer') }}" role="button">报名天庭</a>
                     {% elif bz.status == '招募中'%}
-                    <a class="btn btn-primary btn-lg" href="" role="button">报名参战</a>
+                    <a class="btn btn-primary btn-lg" href="{{ url_for('apply_player') }}" role="button">报名参战</a>
                     {% endif %}
                 {% elif user.level == 1 %}
-                <a class="btn btn-info btn-lg" href="" role="button">已报名参战</a>
+                <a class="btn btn-info btn-lg" href="#" role="button">已报名参战</a>
                 {% elif user.level == 2 %}
-                <a class="btn btn-info btn-lg" href="" role="button">已报名天庭</a>
+                <a class="btn btn-info btn-lg" href="#" role="button">已报名天庭</a>
                 {% elif user.level == 6 %}
                     {% if bz.status == '筹备中' %}
-                    <a class="btn btn-primary btn-lg" href="" role="button">命名马甲</a>
+                    <a class="btn btn-primary btn-lg" href="{{ url_for('naming_id') }}" role="button">命名马甲</a>
                     {% elif bz.status == '招募中' %}
-                    <a class="btn btn-primary btn-lg" href="" role="button">挑选战士</a>
+                    <a class="btn btn-primary btn-lg" href="{{ url_for('pick_player') }}" role="button">挑选战士</a>
                     {% elif bz.status == '分配角色中' %}
-                    <a class="btn btn-primary btn-lg" href="" role="button">分配角色</a>
+                    <a class="btn btn-primary btn-lg" href="{{ url_for('roll_role') }}" role="button">分配角色</a>
                     {% endif %}
                 {% elif user.level == 9 %}
                     {% if bz.status == '筹备中' %}
-                    <a class="btn btn-primary btn-lg" href="" role="button">任命天庭</a>
+                    <a class="btn btn-primary btn-lg" href="{{ url_for('pick_seer') }}" role="button">任命天庭</a>
                     {% endif %}
                 {% endif %}
             {% else %}

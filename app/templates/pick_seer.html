@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-6 col-sm-6">
+            <div class="panel panel-default">
+  <!-- Default panel contents -->
+<div class="panel-heading">报名人员</div>
+<div class="panel-body">
+{% for user_pre in users_pre %}
+<h2>{{ user_pre.nickname }}</h2>
+<p><a class="btn btn-default" href="{{ url_for('change_level', user_id=user_pre.id, level=6) }}" role="button">任命为天庭 &raquo;</a></p>
+{% endfor %}
+</div>
+</div>
+
+                </div>
+                <div class="col-6 col-sm-6">
+            <div class="panel panel-default">
+  <!-- Default panel contents -->
+<div class="panel-heading">天庭人员</div>
+<div class="panel-body">
+{% for user_seer in users_seer %}
+<h2>{{ user_seer.nickname }}</h2>
+<p><a class="btn btn-default" href="{{ url_for('change_level', user_id=user_seer.id, level=2) }}" role="button">取消任命 &laquo;</a></p>
+{% endfor %}
+</div>
+</div>
+
+                </div>
+            </div><!-- row -->
+<!--<p><a class="btn btn-info pull-right" href="#">进入下一阶段</a></p>-->
+
+
+
+
+</div>
+
+{% endblock %}

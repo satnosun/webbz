@@ -9,7 +9,7 @@ from flask import g, request, render_template, session, url_for, escape, redirec
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, login_manager
 from forms import RegistrationForm, LoginForm, TopicForm, ReplyForm
-from models import User, Topic, Reply, Bz, LEVEL_USER, LEVEL_PLAYER, LEVEL_SEER, LEVEL_ADMIN
+from models import User, Topic, Reply, Bz, Role, Player, Action, Settle, Feedback, LEVEL_USER, LEVEL_PLAYER, LEVEL_SEER, LEVEL_ADMIN, LEVEL_PRE_PLAYER, LEVEL_PRE_SEER
 import CaptchasDotNet
 import hashlib
 from flask.ext.admin import Admin, BaseView, expose, AdminIndexView
@@ -222,4 +222,67 @@ def status():
         bz = bz,
         user = g.user,
         title = '概况')
+
+@app.route('/apply_player')
+def apply_player():
+    if g.user.level == LEVEL_USER:
+        u = User.query.filter_by(id = g.user.id).first()
+        u.level = LEVEL_PRE_PLAYER
+        db.session.commit()
+        return redirect(url_for("status"))
+    else:
+        return redirect(request.args.get("next") or url_for("index"))
+
+@app.route('/apply_seer')
+def apply_seer():
+    if g.user.level == LEVEL_USER:
+        u = User.query.filter_by(id = g.user.id).first()
+        u.level = LEVEL_PRE_SEER
+        db.session.commit()
+        return redirect(url_for("status"))
+    else:
+        return redirect(request.args.get("next") or url_for("index"))
+
+@app.route('/pick_player')
+def pick_player():
+    pass
+
+@app.route('/pick_seer')
+def pick_seer():
+    if g.user.level == LEVEL_ADMIN:
+        users_pre = User.query.filter_by(level=LEVEL_PRE_SEER).all()
+        users_seer = User.query.filter_by(level=LEVEL_SEER).all()
+        return render_template('pick_seer.html',
+            users_pre = users_pre,
+            users_seer = users_seer,
+            title = '任命天庭')
+    else:
+        return redirect(url_for("status"))
+
+@app.route('/cl/<int:user_id>&<int:level>')
+def change_level(user_id, level):
+    if g.user.level == LEVEL_ADMIN:
+        u = User.query.filter_by(id=user_id).first()
+        u.level = level
+        db.session.commit()
+        return redirect(url_for("pick_seer"))
+
+@app.route('/naming_id')
+def naming_id():
+    bz = db.session.query(Bz).filter(Bz.status != u'已完结').first()
+    player_num = range(1, bz.player_num+1)
+    flash(player_num)
+    if g.user.level == LEVEL_SEER:
+        players = Player.query.all()
+        return render_template('naming_id.html',
+            players = players,
+            player_num = player_num,
+            title = '命名马甲')
+    else:
+        return redirect(url_for("status"))
+        
+
+@app.route('/roll_role')
+def roll_role():
+    pass
 
