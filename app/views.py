@@ -51,8 +51,16 @@ class BzView(ModelView):
     def __init__(self, session, **kwargs):
         # You can pass name and other parameters if you want to
         super(BzView, self).__init__(Bz, session, **kwargs)
+class PlayerView(ModelView):
+    # 重写显示的字段
+    column_list = ('id', 'name', 'nickname')
+
+    def __init__(self, session, **kwargs):
+        # You can pass name and other parameters if you want to
+        super(PlayerView, self).__init__(Player, session, **kwargs)
 
 admin.add_view(BzView(db.session))
+admin.add_view(PlayerView(db.session))
 
 admin.add_view(UserView(db.session))
 
@@ -217,9 +225,11 @@ def game():
 def status():
     bz = db.session.query(Bz).filter(Bz.status != u'已完结').first()
     bzs = Bz.query.all()
+    p_left = Player.query.filter_by(name = '').first()
     return render_template('status.html',
         bzs = bzs,
         bz = bz,
+        p_left = p_left,
         user = g.user,
         title = '概况')
 
@@ -267,22 +277,46 @@ def change_level(user_id, level):
         db.session.commit()
         return redirect(url_for("pick_seer"))
 
-@app.route('/naming_id')
+@app.route('/naming_id', methods=['GET', 'POST'])
 def naming_id():
     bz = db.session.query(Bz).filter(Bz.status != u'已完结').first()
-    player_num = range(1, bz.player_num+1)
-    flash(player_num)
     if g.user.level == LEVEL_SEER:
         players = Player.query.all()
+        players_num = len(players)
+        players_left = range(1, bz.player_num-players_num+1)
+        if request.method == 'POST':
+            list_playernames = request.form['str_playernames'].split(",")
+            i = 0
+            for player in players:
+                player.name = list_playernames[i]
+                i = i + 1
+                db.session.commit()
+            while bz.player_num - i:
+                player = Player(name=list_playernames[i])
+                i = i + 1
+                db.session.add(player)
+                db.session.commit()
+            return redirect(url_for("status"))
         return render_template('naming_id.html',
             players = players,
-            player_num = player_num,
+            players_left = players_left,
             title = '命名马甲')
     else:
         return redirect(url_for("status"))
-        
+
+@app.route('/cbs/<int:bz_id>&<status>')
+def change_bz_status(bz_id, status):
+    bz = db.session.query(Bz).filter(Bz.status != u'已完结').first()
+    if g.user.level == LEVEL_SEER:
+        return redirect(url_for("status"))
 
 @app.route('/roll_role')
 def roll_role():
     pass
+
+
+    
+
+
+
 

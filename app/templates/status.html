@@ -23,6 +23,9 @@
                 {% elif user.level == 6 %}
                     {% if bz.status == '筹备中' %}
                     <a class="btn btn-primary btn-lg" href="{{ url_for('naming_id') }}" role="button">命名马甲</a>
+                        {% if not p_left %}
+                        <a class="btn btn-primary btn-lg" href="{{ url_for('naming_id') }}" role="button">进入下一阶段</a>
+                        {% endif %}
                     {% elif bz.status == '招募中' %}
                     <a class="btn btn-primary btn-lg" href="{{ url_for('pick_player') }}" role="button">挑选战士</a>
                     {% elif bz.status == '分配角色中' %}
