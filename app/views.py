@@ -14,7 +14,7 @@ import CaptchasDotNet
 import hashlib
 from flask.ext.admin import Admin, BaseView, expose, AdminIndexView
 from flask.ext.admin.contrib.sqla import ModelView
-
+import random
 
 admin = Admin(app, name='三国版杀', index_view=AdminIndexView(name='概况'))
 class MyBaseView(BaseView):
@@ -53,14 +53,22 @@ class BzView(ModelView):
         super(BzView, self).__init__(Bz, session, **kwargs)
 class PlayerView(ModelView):
     # 重写显示的字段
-    column_list = ('id', 'name', 'nickname')
+    column_list = ('id', 'name', 'nickname', 'rolename')
 
     def __init__(self, session, **kwargs):
         # You can pass name and other parameters if you want to
         super(PlayerView, self).__init__(Player, session, **kwargs)
+class RoleView(ModelView):
+    # 重写显示的字段
+    column_list = ('id', 'name')
+
+    def __init__(self, session, **kwargs):
+        # You can pass name and other parameters if you want to
+        super(RoleView, self).__init__(Role, session, **kwargs)
 
 admin.add_view(BzView(db.session))
 admin.add_view(PlayerView(db.session))
+admin.add_view(RoleView(db.session))
 
 admin.add_view(UserView(db.session))
 
@@ -226,10 +234,13 @@ def status():
     bz = db.session.query(Bz).filter(Bz.status != u'已完结').first()
     bzs = Bz.query.all()
     p_left = Player.query.filter_by(name = '').first()
+    u_p = User.query.filter_by(level = LEVEL_PLAYER).all()
+    u = ((bz.player_num - len(u_p)) > 0)
     return render_template('status.html',
         bzs = bzs,
         bz = bz,
         p_left = p_left,
+        u = u,
         user = g.user,
         title = '概况')
 
@@ -255,7 +266,15 @@ def apply_seer():
 
 @app.route('/pick_player')
 def pick_player():
-    pass
+    if g.user.level == LEVEL_SEER:
+        users_pre = User.query.filter_by(level=LEVEL_PRE_PLAYER).all()
+        users_player = User.query.filter_by(level=LEVEL_PLAYER).all()
+        return render_template('pick_player.html',
+            users_pre = users_pre,
+            users_player = users_player,
+            title = '挑选战士')
+    else:
+        return redirect(url_for("status"))
 
 @app.route('/pick_seer')
 def pick_seer():
@@ -276,6 +295,11 @@ def change_level(user_id, level):
         u.level = level
         db.session.commit()
         return redirect(url_for("pick_seer"))
+    if g.user.level == LEVEL_SEER:
+        u = User.query.filter_by(id=user_id).first()
+        u.level = level
+        db.session.commit()
+        return redirect(url_for("pick_player"))
 
 @app.route('/naming_id', methods=['GET', 'POST'])
 def naming_id():
@@ -306,16 +330,38 @@ def naming_id():
 
 @app.route('/cbs/<int:bz_id>&<status>')
 def change_bz_status(bz_id, status):
-    bz = db.session.query(Bz).filter(Bz.status != u'已完结').first()
+    bz = Bz.query.filter_by(id=bz_id).first()
     if g.user.level == LEVEL_SEER:
+        bz.status = status
+        db.session.commit()
+        return redirect(url_for("status"))
+    else:
         return redirect(url_for("status"))
 
-@app.route('/roll_role')
+@app.route('/roll_role', methods=['GET', 'POST'])
 def roll_role():
     pass
-
-
-    
+    bz = db.session.query(Bz).filter(Bz.status != u'已完结').first()
+    if g.user.level == LEVEL_SEER:
+        players = Player.query.all()
+        roles = random.sample(Role.query.all(), bz.player_num)
+        users = random.sample(User.query.filter_by(level=LEVEL_PLAYER).all(), bz.player_num)
+        i = 0
+        for player in players:
+            player.nickname = users[i].nickname
+            player.rolename = roles[i].name
+            i = i + 1
+            db.session.commit()
+        roles = Role.query.all()
+        players = []
+        for role in roles:
+            players.append(Player.query.filter_by(rolename=role.name).first())
+        return render_template('roll_role.html',
+            players = players,
+            bz = bz,
+            title = '分配角色')
+    else:
+        return redirect(url_for("status"))
 
 
 

@@ -24,10 +24,13 @@
                     {% if bz.status == '筹备中' %}
                     <a class="btn btn-primary btn-lg" href="{{ url_for('naming_id') }}" role="button">命名马甲</a>
                         {% if not p_left %}
-                        <a class="btn btn-primary btn-lg" href="{{ url_for('naming_id') }}" role="button">进入下一阶段</a>
+                        <a class="btn btn-primary btn-lg" href="{{ url_for('change_bz_status', bz_id=bz.id, status='招募中') }}" role="button">进入下一阶段</a>
                         {% endif %}
                     {% elif bz.status == '招募中' %}
                     <a class="btn btn-primary btn-lg" href="{{ url_for('pick_player') }}" role="button">挑选战士</a>
+                        {% if not u%}
+                        <a class="btn btn-primary btn-lg" href="{{ url_for('change_bz_status', bz_id=bz.id, status='分配角色中') }}" role="button">进入下一阶段</a>
+                        {% endif %}
                     {% elif bz.status == '分配角色中' %}
                     <a class="btn btn-primary btn-lg" href="{{ url_for('roll_role') }}" role="button">分配角色</a>
                     {% endif %}
@@ -57,11 +60,27 @@
         </div><!-- .col -->
         <div id="sidebar" class="col-xs-6 col-sm-3 sidebar-offcanvas" role="navigation">
             <div class="list-group">
-            {% if bz.status=='招募中' %}
                 <a class="list-group-item" href="{{ url_for('status') }}">版杀概况</a>
-                <a class="list-group-item" href="">挑选战士</a>
-                <a class="list-group-item" href="">命名马甲</a>
-                <a class="list-group-item" href="">分配角色</a>
+                {% if user.level == 0 %}
+                    {% if bz.status == '筹备中' %}
+                <a class="list-group-item" href="{{ url_for('apply_seer') }}">报名天庭</a>
+                    {% elif bz.status == '招募中'%}
+                <a class="list-group-item" href="{{ url_for('apply_player') }}">报名参战</a>
+                    {% endif %}
+                {% elif user.level == 6 %}
+                    {% if bz.status == '筹备中' %}
+                <a class="list-group-item" href="{{ url_for('naming_id') }}">命名马甲</a>
+                    {% elif bz.status == '招募中' %}
+                <a class="list-group-item" href="{{ url_for('pick_player') }}">挑选战士</a>
+                    {% elif bz.status == '分配角色中' %}
+                <a class="list-group-item" href="{{ url_for('roll_role') }}">分配角色</a>
+                    {% endif %}
+                {% elif user.level == 9 %}
+                    {% if bz.status == '筹备中' %}
+                <a class="list-group-item" href="{{ url_for('pick_seer') }}">任命天庭</a>
+                    {% endif %}
+                {% endif %}
+            {% if bz.status=='进行中' %}
                 <a class="list-group-item" href="">提交行动</a>
                 <a class="list-group-item" href="">提交投票</a>
                 <a class="list-group-item" href="">查看反馈</a>

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block content %}
+<div class="container">
+    <div class="panel panel-info">
+        <div class="panel-heading">分配角色</div>
+
+            <table class="table">
+                <tr>
+                    <th>角色</th>
+                    <th>昵称</th>
+                    <th>游戏ID</th>
+                </tr>
+                {% for player in players %}
+                <tr>
+                    <td>{{ player.rolename }}</td>
+                    <td>{{ player.nickname }}</td>
+                    <td>{{ player.name }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+    </div><!-- panel -->
+    <div class="row">
+        <div class="col-xs-6">
+            <a class="btn btn-primary btn-lg" href="{{ url_for('roll_role') }}" role="button">重新分配</a>
+        </div>
+        <div class="col-xs-6">
+            <a class="btn btn-primary btn-lg" href="{{ url_for('change_bz_status', bz_id=bz.id, status='进行中') }}" role="button">进入下一阶段</a>
+        </div>
+    </div>
+</div><!-- container -->
+{% endblock %}
